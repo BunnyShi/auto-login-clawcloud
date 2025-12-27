@@ -137,12 +137,8 @@ def run_login():
         final_url = page.url
         print(f"📍 最终页面 URL: {final_url}")
         
-        # 截图保存，用于 GitHub Actions 查看结果
-        # page.screenshot(path="login_result.png")
-        # 截图并直接获取字节数据
-        img_bytes = page.screenshot(return_bytes=True)
-        with open("login_result.png", "wb") as wb:
-            wb.write(img_bytes)
+        # 截图保存直接获取字节数据，用于 GitHub Actions 查看结果
+        img_bytes = page.screenshot(path="login_result.png")
         print("📸 已保存结果截图: login_result.png")
         # 将字节数据编码为 Base64 字符串
         img_b64 = base64.b64encode(img_bytes).decode("UTF-8")
