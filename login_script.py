@@ -3,8 +3,42 @@
 
 import os
 import time
+import base64
+import requests
 import pyotp  # 用于生成 2FA 验证码
 from playwright.sync_api import sync_playwright
+
+def sendMail(img_b64=""):
+    mailer_url = os.environ.get("MAILER_URL")
+    mailer_ua = os.environ.get("MAILER_UA")
+    mailer_api_key = os.environ.get("MAILER_API_KEY")
+    mail_to = os.environ.get("MAILER_TO")
+
+    if not mailer_url or not mailer_ua or not mailer_api_key:
+        print("⚠️ 邮件通知相关参数未设置 ...")
+        return
+
+
+    # mail_to = "xxxxxxxxxx@xxxx.ch"
+    # mail_subject = "clawcloud keep alive - Notify"
+    # mail_html_content = """
+    #     <p>这是一个图片</p><br/><img src='cid:img'>
+    # """
+    
+    payload = {
+        "to": mail_to,
+        "subject": "clawcloud keep alive - Notify",
+        "content": "<p>图片信息</p><br/><img src='cid:img'>",
+        "image": {
+            "cid": "img",
+            "contentType": "image/png",
+            "base64": img_b64
+        }
+    }
+    headers = { "Authorization": f"Bearer {mailer_api_key}", "content-type": "application/json", "User-Agent": mailer_ua }
+    resp = requests.post(mailer_url, json=payload, headers=headers, proxies={})
+    if ( resp.status_code == 200 and resp.text == "ok" ): print("📧 邮件通知发送成功...")
+
 
 def run_login():
     # 1. 获取环境变量中的敏感信息
@@ -103,9 +137,12 @@ def run_login():
         final_url = page.url
         print(f"📍 最终页面 URL: {final_url}")
         
-        # 截图保存，用于 GitHub Actions 查看结果
-        page.screenshot(path="login_result.png")
+        # 截图保存直接获取字节数据，用于 GitHub Actions 查看结果
+        img_bytes = page.screenshot(path="login_result.png")
         print("📸 已保存结果截图: login_result.png")
+        # 将字节数据编码为 Base64 字符串
+        img_b64 = base64.b64encode(img_bytes).decode("UTF-8")
+        sendMail(img_b64)
 
         # 8. 验证是否成功
         # 成功的标志：URL 不再是 GitHub，且包含控制台特征
