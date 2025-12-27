@@ -30,7 +30,7 @@ jobs:
           GH_USERNAME: ${{ secrets.GH_USERNAME }}
           GH_PASSWORD: ${{ secrets.GH_PASSWORD }}
           GH_2FA_SECRET: ${{ secrets.GH_2FA_SECRET }}
-          MAILER_UA: ${{ secrets.MAILER_URL }}
+          MAILER_URL: ${{ secrets.MAILER_URL }}
           MAILER_UA: ${{ secrets.MAILER_UA }}
           MAILER_API_KEY: ${{ secrets.MAILER_API_KEY }}
           MAILER_TO: ${{ secrets.MAILER_TO }}
