@@ -27,13 +27,8 @@ def sendMail(img_b64=""):
     
     payload = {
         "to": mail_to,
-        "subject": "clawcloud keep alive - Notify",
-        "content": "<p>图片信息</p><br/><img src='cid:img'>",
-        "image": {
-            "cid": "img",
-            "contentType": "image/png",
-            "base64": img_b64
-        }
+        "subject": "Clawcloud Keep Alive - Notify",
+        "content": f"<p>图片内容</p><br/><img src='data:image/png;base64,{img_b64}'>"
     }
     headers = { "Authorization": f"Bearer {mailer_api_key}", "content-type": "application/json", "User-Agent": mailer_ua }
     resp = requests.post(mailer_url, json=payload, headers=headers, proxies={})
