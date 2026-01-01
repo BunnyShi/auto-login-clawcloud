@@ -26,6 +26,7 @@ def sendMail(img_b64=""):
     # """
     
     payload = {
+        "from": "Github Action Run",
         "to": mail_to,
         "subject": "Clawcloud Keep Alive - Notify",
         "content": f"<p>图片内容</p><br/><img src='data:image/png;base64,{img_b64}'>"
